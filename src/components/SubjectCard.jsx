@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const SubjectCard = ({ subject, approved, available, onClick }) => {
+const SubjectCard = ({ subject, approved, available, missing = [], onClick }) => {
+  const [isShaking, setIsShaking] = useState(false);
+
   let statusClass = 'unavailable';
   let statusText = 'No Disponible';
   
@@ -12,10 +14,19 @@ const SubjectCard = ({ subject, approved, available, onClick }) => {
     statusText = 'Disponible';
   }
 
+  const handleClick = () => {
+    if (!approved && !available) {
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 400);
+      return;
+    }
+    onClick(subject.code);
+  };
+
   return (
     <div 
-      className={`subject-card ${statusClass} glass`}
-      onClick={() => onClick(subject.code)}
+      className={`subject-card ${statusClass} glass ${isShaking ? 'shake' : ''}`}
+      onClick={handleClick}
       data-testid={`subject-card-${subject.code}`}
     >
       <div className="subject-header">
@@ -25,15 +36,18 @@ const SubjectCard = ({ subject, approved, available, onClick }) => {
       <h3 className="subject-name">{subject.name}</h3>
       <div className="subject-footer">
         <span className="status-badge">{statusText}</span>
-        {(!approved && !available) && subject.reqs && subject.reqs.length > 0 && (
-          <span className="reqs-tooltip" title={`Pre-reqs: ${subject.reqs.join(', ')}`}>
-            ⚠️ Faltan requisitos
-          </span>
-        )}
-        {(!approved && !available) && subject.reqCr > 0 && (
-          <span className="reqs-tooltip" title={`Requiere: ${subject.reqCr} U.C.`}>
-            ⚠️ Faltan créditos
-          </span>
+        {missing && missing.length > 0 && (
+          <div className="tooltip-container" data-testid="missing-alert">
+            <span className="alert-icon">⚠️</span>
+            <div className="tooltip-content">
+              <strong>Falta para cursar:</strong>
+              <ul>
+                {missing.map((req, idx) => (
+                  <li key={idx}>- {req}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         )}
       </div>
     </div>

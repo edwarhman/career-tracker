@@ -37,6 +37,22 @@ function App() {
     return true;
   };
 
+  const getMissingRequirements = (subject) => {
+    let missingInfo = [];
+    if (subject.reqCr > 0 && totalCredits < subject.reqCr) {
+      missingInfo.push(`Tener ${subject.reqCr} U.C.`);
+    }
+    for (let reqCode of subject.reqs) {
+      if (!isApproved(reqCode)) {
+        const prereq = pensum.find(s => s.code === reqCode);
+        if (prereq) {
+          missingInfo.push(`Aprobar ${prereq.name}`);
+        }
+      }
+    }
+    return missingInfo;
+  };
+
   const toggleSubject = (code) => {
     setApprovedSubjects(prev => {
       if (prev.includes(code)) {
@@ -87,6 +103,7 @@ function App() {
                   {subjects.map(subject => {
                     const approved = isApproved(subject.code);
                     const available = isAvailable(subject);
+                    const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
 
                     return (
                       <SubjectCard 
@@ -94,6 +111,7 @@ function App() {
                         subject={subject} 
                         approved={approved} 
                         available={available} 
+                        missing={missing}
                         onClick={toggleSubject} 
                       />
                     );

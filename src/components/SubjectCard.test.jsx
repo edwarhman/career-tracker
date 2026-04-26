@@ -11,7 +11,7 @@ describe('SubjectCard Component', () => {
     reqCr: 100
   };
 
-  test('calls onClick with subject code when clicked', () => {
+  test('calls onClick with subject code when clicked if available', () => {
     const handleClick = vi.fn();
     render(<SubjectCard subject={mockSubject} approved={false} available={true} onClick={handleClick} />);
     
@@ -19,6 +19,17 @@ describe('SubjectCard Component', () => {
     const card = screen.getByTestId('subject-card-0331');
     fireEvent.click(card);
     expect(handleClick).toHaveBeenCalledWith('0331');
+  });
+
+  test('does not call onClick and adds shake class when unavailable', () => {
+    const handleClick = vi.fn();
+    render(<SubjectCard subject={mockSubject} approved={false} available={false} missing={['Algo']} onClick={handleClick} />);
+    
+    const card = screen.getByTestId('subject-card-0331');
+    fireEvent.click(card);
+    
+    expect(handleClick).not.toHaveBeenCalled();
+    expect(card).toHaveClass('shake');
   });
 
   test('renders "Aprobada" text when approved is true and no warnings rendered', () => {
@@ -38,28 +49,30 @@ describe('SubjectCard Component', () => {
   });
 
   test('renders "No Disponible" and warnings when missing both prereqs and credits', () => {
-    render(<SubjectCard subject={mockSubject} approved={false} available={false} onClick={() => {}} />);
+    const missingBoth = ['Aprobar Fake Req', 'Tener 100 U.C.'];
+    render(<SubjectCard subject={mockSubject} approved={false} available={false} missing={missingBoth} onClick={() => {}} />);
     
     expect(screen.getByText('No Disponible')).toBeInTheDocument();
-    expect(screen.getByText(/Faltan requisitos/i)).toBeInTheDocument();
-    expect(screen.getByText(/Faltan créditos/i)).toBeInTheDocument();
+    expect(screen.getByTestId('missing-alert')).toBeInTheDocument();
+    expect(screen.getByText('- Aprobar Fake Req')).toBeInTheDocument();
   });
 
   test('conditionally renders missing reqs tooltip if missing prereqs without missing credits', () => {
-    const subjectNoCredits = { ...mockSubject, reqCr: 0 };
-    render(<SubjectCard subject={subjectNoCredits} approved={false} available={false} onClick={() => {}} />);
+    const missingReq = ['Aprobar Fake Req'];
+    render(<SubjectCard subject={mockSubject} approved={false} available={false} missing={missingReq} onClick={() => {}} />);
     
     expect(screen.getByText('No Disponible')).toBeInTheDocument();
-    expect(screen.getByText(/Faltan requisitos/i)).toBeInTheDocument();
-    expect(screen.queryByText(/Faltan créditos/i)).not.toBeInTheDocument();
+    expect(screen.getByTestId('missing-alert')).toBeInTheDocument();
+    expect(screen.getByText('- Aprobar Fake Req')).toBeInTheDocument();
+    expect(screen.queryByText(/U\.C\./i)).not.toBeInTheDocument();
   });
 
   test('conditionally renders missing credits tooltip if missing credits without missing prereqs', () => {
-    const subjectNoReqs = { ...mockSubject, reqs: [] };
-    render(<SubjectCard subject={subjectNoReqs} approved={false} available={false} onClick={() => {}} />);
+    const missingCr = ['Tener 100 U.C.'];
+    render(<SubjectCard subject={mockSubject} approved={false} available={false} missing={missingCr} onClick={() => {}} />);
     
     expect(screen.getByText('No Disponible')).toBeInTheDocument();
-    expect(screen.queryByText(/Faltan requisitos/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Faltan créditos/i)).toBeInTheDocument();
+    expect(screen.getByTestId('missing-alert')).toBeInTheDocument();
+    expect(screen.getByText('- Tener 100 U.C.')).toBeInTheDocument();
   });
 });
