@@ -106,9 +106,16 @@ function App() {
               let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
 
               return (
-                <div key={sem} className="semester-col">
+                <div key={sem} className={`semester-col ${sem >= 8 ? 'specialty-semester' : ''}`}>
                   <div className="semester-header">
-                    <h2>Semestre {sem}</h2>
+                    <div className="semester-title-group">
+                      <h2>Semestre {sem}</h2>
+                      {sem >= 8 ? (
+                        <span className="specialty-badge">{selectedSpecialty}</span>
+                      ) : (
+                        <span className="specialty-badge basic-cycle">Ciclo Básico</span>
+                      )}
+                    </div>
                     <span className="semester-uc">{semUc} U.C.</span>
                   </div>
                   <div className="semester-subjects">
