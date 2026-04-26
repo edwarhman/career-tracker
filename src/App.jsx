@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef } from 'react';
 import { pensum, specialtiesList } from './data/pensum';
 import SubjectCard from './components/SubjectCard';
 import Header from './components/Header';
+import SliderButton from './components/SliderButton';
 
 function App() {
   const [selectedSpecialty, setSelectedSpecialty] = useState(specialtiesList[0]);
@@ -94,13 +95,7 @@ function App() {
       />
 
       <div className="board-wrapper">
-        <button 
-          className="slider-zone left" 
-          onClick={() => scrollBoard('left')}
-          aria-label="Desplazar a la izquierda"
-        >
-          <div className="slider-btn-circle">&#10094;</div>
-        </button>
+        <SliderButton direction="left" onClick={() => scrollBoard('left')} />
 
         <main className="board-container" ref={scrollRef}>
           <div className="semesters-grid">
@@ -140,13 +135,7 @@ function App() {
           </div>
         </main>
         
-        <button 
-          className="slider-zone right" 
-          onClick={() => scrollBoard('right')}
-          aria-label="Desplazar a la derecha"
-        >
-          <div className="slider-btn-circle">&#10095;</div>
-        </button>
+        <SliderButton direction="right" onClick={() => scrollBoard('right')} />
       </div>
     </div>
   );
