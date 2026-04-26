@@ -1,5 +1,7 @@
 # 🎓 UCV - Career Tracker (Ingeniería Eléctrica)
 
+![Testing Suite](https://github.com/edwarhman/career-tracker/actions/workflows/test.yml/badge.svg)
+
 Un dashboard interactivo y moderno diseñado para que los estudiantes de **Ingeniería Eléctrica de la Universidad Central de Venezuela (UCV)** puedan gestionar y visualizar su progreso académico de forma intuitiva.
 
 ![Dashboard Preview](https://via.placeholder.com/800x450/1e293b/f8fafc?text=Career+Tracker+UCV+Preview)
