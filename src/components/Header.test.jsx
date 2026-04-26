@@ -12,6 +12,8 @@ describe('Header Component', () => {
         selectedSpecialty="Option 1"
         onSpecialtyChange={() => {}}
         totalCredits={120}
+        onExport={() => {}}
+        onImport={() => {}}
       />
     );
     
@@ -28,6 +30,8 @@ describe('Header Component', () => {
         selectedSpecialty="Option 2"
         onSpecialtyChange={() => {}}
         totalCredits={0}
+        onExport={() => {}}
+        onImport={() => {}}
       />
     );
     
@@ -49,6 +53,8 @@ describe('Header Component', () => {
         selectedSpecialty="Option 1"
         onSpecialtyChange={handleChange}
         totalCredits={0}
+        onExport={() => {}}
+        onImport={() => {}}
       />
     );
     

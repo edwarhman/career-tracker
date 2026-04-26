@@ -1,12 +1,17 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { pensum, specialtiesList } from './data/pensum';
 import SubjectCard from './components/SubjectCard';
 import Header from './components/Header';
 import SliderButton from './components/SliderButton';
 
 function App() {
-  const [selectedSpecialty, setSelectedSpecialty] = useState(specialtiesList[0]);
-  const [approvedSubjects, setApprovedSubjects] = useState([]);
+  const [selectedSpecialty, setSelectedSpecialty] = useState(() => {
+    return localStorage.getItem('selected_specialty') || specialtiesList[0];
+  });
+  const [approvedSubjects, setApprovedSubjects] = useState(() => {
+    const saved = localStorage.getItem('approved_subjects');
+    return saved ? JSON.parse(saved) : [];
+  });
   const scrollRef = useRef(null);
 
   // Calculate total credits
@@ -65,13 +70,60 @@ function App() {
   const toggleSubject = (code) => {
     setApprovedSubjects(prev => {
       if (prev.includes(code)) {
-        // If we uncheck a subject, ideally we should uncheck everything that depends on it.
-        // For simplicity now, we just uncheck this one. A full implementation would do a recursive uncheck.
         return prev.filter(c => c !== code);
       } else {
         return [...prev, code];
       }
     });
+  };
+
+  useEffect(() => {
+    localStorage.setItem('approved_subjects', JSON.stringify(approvedSubjects));
+  }, [approvedSubjects]);
+
+  useEffect(() => {
+    localStorage.setItem('selected_specialty', selectedSpecialty);
+  }, [selectedSpecialty]);
+
+  const exportData = () => {
+    const data = {
+      selectedSpecialty,
+      approvedSubjects,
+      version: "1.0",
+      exportDate: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `tracker_${selectedSpecialty.replace(/\s+/g, '_').toLowerCase()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importData = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (data.approvedSubjects && Array.isArray(data.approvedSubjects)) {
+          if (data.selectedSpecialty && specialtiesList.includes(data.selectedSpecialty)) {
+            setSelectedSpecialty(data.selectedSpecialty);
+          }
+          setApprovedSubjects(data.approvedSubjects);
+        } else {
+          alert('Error: El archivo no contiene un formato de progreso válido.');
+        }
+      } catch (err) {
+        alert('Error al procesar el archivo JSON.');
+      }
+    };
+    reader.readAsText(file);
+    // Reset input so the same file can be imported again if needed
+    event.target.value = '';
   };
 
   // Group subjects by Semester (1 to 10)
@@ -92,6 +144,8 @@ function App() {
         selectedSpecialty={selectedSpecialty}
         onSpecialtyChange={setSelectedSpecialty}
         totalCredits={totalCredits}
+        onExport={exportData}
+        onImport={importData}
       />
 
       <div className="board-wrapper">

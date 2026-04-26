@@ -142,6 +142,42 @@ body {
   color: var(--color-approved);
 }
 
+.action-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.action-btn-mini:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-available);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn-mini svg {
+  transition: transform 0.3s ease;
+}
+
+.action-btn-mini:hover svg {
+  transform: scale(1.1);
+}
+
 /* Board */
 .board-wrapper {
   position: relative;
