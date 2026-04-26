@@ -99,22 +99,18 @@ function App() {
 
         <main className="board-container" ref={scrollRef}>
           <div className="semesters-grid">
-            {semesters.map(sem => {
+            {/* Ciclo Básico */}
+            {semesters.filter(sem => sem < 8).map(sem => {
               const subjects = getSubjectsForSemester(sem);
-              if (subjects.length === 0) return null; // Avoid empty columns if any
-
+              if (subjects.length === 0) return null;
               let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
 
               return (
-                <div key={sem} className={`semester-col ${sem >= 8 ? 'specialty-semester' : ''}`}>
+                <div key={sem} className="semester-col">
                   <div className="semester-header">
                     <div className="semester-title-group">
                       <h2>Semestre {sem}</h2>
-                      {sem >= 8 ? (
-                        <span className="specialty-badge">{selectedSpecialty}</span>
-                      ) : (
-                        <span className="specialty-badge basic-cycle">Ciclo Básico</span>
-                      )}
+                      <span className="specialty-badge basic-cycle">Ciclo Básico</span>
                     </div>
                     <span className="semester-uc">{semUc} U.C.</span>
                   </div>
@@ -123,7 +119,6 @@ function App() {
                       const approved = isApproved(subject.code);
                       const available = isAvailable(subject);
                       const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
-
                       return (
                         <SubjectCard 
                           key={subject.code} 
@@ -139,6 +134,44 @@ function App() {
                 </div>
               );
             })}
+
+            {/* Ciclo Especializado */}
+            <div className="specialty-group">
+              {semesters.filter(sem => sem >= 8).map(sem => {
+                const subjects = getSubjectsForSemester(sem);
+                if (subjects.length === 0) return null;
+                let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
+
+                return (
+                  <div key={sem} className="semester-col specialty-semester">
+                    <div className="semester-header">
+                      <div className="semester-title-group">
+                        <h2>Semestre {sem}</h2>
+                        <span className="specialty-badge">{selectedSpecialty}</span>
+                      </div>
+                      <span className="semester-uc">{semUc} U.C.</span>
+                    </div>
+                    <div className="semester-subjects">
+                      {subjects.map(subject => {
+                        const approved = isApproved(subject.code);
+                        const available = isAvailable(subject);
+                        const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
+                        return (
+                          <SubjectCard 
+                            key={subject.code} 
+                            subject={subject} 
+                            approved={approved} 
+                            available={available} 
+                            missing={missing}
+                            onClick={toggleSubject} 
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </main>
         
