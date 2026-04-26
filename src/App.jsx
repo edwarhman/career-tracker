@@ -100,33 +100,34 @@ function App() {
         <main className="board-container" ref={scrollRef}>
           <div className="semesters-grid">
             {/* Ciclo Básico */}
-            {semesters.filter(sem => sem < 8).map(sem => {
-              const subjects = getSubjectsForSemester(sem);
-              if (subjects.length === 0) return null;
-              let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
+            <div className="basic-cycle-group">
+              {semesters.filter(sem => sem < 8).map(sem => {
+                const subjects = getSubjectsForSemester(sem);
+                if (subjects.length === 0) return null;
+                let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
 
-              return (
-                <div key={sem} className="semester-col">
-                  <div className="semester-header">
-                    <div className="semester-title-group">
-                      <h2>Semestre {sem}</h2>
-                      <span className="specialty-badge basic-cycle">Ciclo Básico</span>
+                return (
+                  <div key={sem} className="semester-col">
+                    <div className="semester-header">
+                      <div className="semester-title-group">
+                        <h2>Semestre {sem}</h2>
+                        <span className="specialty-badge basic-cycle">Ciclo Básico</span>
+                      </div>
+                      <span className="semester-uc">{semUc} U.C.</span>
                     </div>
-                    <span className="semester-uc">{semUc} U.C.</span>
-                  </div>
-                  <div className="semester-subjects">
-                    {subjects.map(subject => {
-                      const approved = isApproved(subject.code);
-                      const available = isAvailable(subject);
-                      const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
-                      return (
-                        <SubjectCard 
-                          key={subject.code} 
-                          subject={subject} 
-                          approved={approved} 
-                          available={available} 
-                          missing={missing}
-                          onClick={toggleSubject} 
+                    <div className="semester-subjects">
+                      {subjects.map(subject => {
+                        const approved = isApproved(subject.code);
+                        const available = isAvailable(subject);
+                        const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
+                        return (
+                          <SubjectCard 
+                            key={subject.code} 
+                            subject={subject} 
+                            approved={approved} 
+                            available={available} 
+                            missing={missing}
+                            onClick={toggleSubject} 
                         />
                       );
                     })}
@@ -134,6 +135,7 @@ function App() {
                 </div>
               );
             })}
+            </div>
 
             {/* Ciclo Especializado */}
             <div className="specialty-group">
