@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { pensum, specialtiesList } from './data/pensum';
 import SubjectCard from './components/SubjectCard';
 import Header from './components/Header';
@@ -6,6 +6,7 @@ import Header from './components/Header';
 function App() {
   const [selectedSpecialty, setSelectedSpecialty] = useState(specialtiesList[0]);
   const [approvedSubjects, setApprovedSubjects] = useState([]);
+  const scrollRef = useRef(null);
 
   // Calculate total credits
   const totalCredits = useMemo(() => {
@@ -35,6 +36,13 @@ function App() {
     }
     
     return true;
+  };
+
+  const scrollBoard = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -304 : 304; // 280px card + 24px gap
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
   };
 
   const getMissingRequirements = (subject) => {
@@ -85,43 +93,61 @@ function App() {
         totalCredits={totalCredits}
       />
 
-      <main className="board-container">
-        <div className="semesters-grid">
-          {semesters.map(sem => {
-            const subjects = getSubjectsForSemester(sem);
-            if (subjects.length === 0) return null; // Avoid empty columns if any
+      <div className="board-wrapper">
+        <button 
+          className="slider-zone left" 
+          onClick={() => scrollBoard('left')}
+          aria-label="Desplazar a la izquierda"
+        >
+          <div className="slider-btn-circle">&#10094;</div>
+        </button>
 
-            let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
+        <main className="board-container" ref={scrollRef}>
+          <div className="semesters-grid">
+            {semesters.map(sem => {
+              const subjects = getSubjectsForSemester(sem);
+              if (subjects.length === 0) return null; // Avoid empty columns if any
 
-            return (
-              <div key={sem} className="semester-col">
-                <div className="semester-header">
-                  <h2>Semestre {sem}</h2>
-                  <span className="semester-uc">{semUc} U.C.</span>
+              let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
+
+              return (
+                <div key={sem} className="semester-col">
+                  <div className="semester-header">
+                    <h2>Semestre {sem}</h2>
+                    <span className="semester-uc">{semUc} U.C.</span>
+                  </div>
+                  <div className="semester-subjects">
+                    {subjects.map(subject => {
+                      const approved = isApproved(subject.code);
+                      const available = isAvailable(subject);
+                      const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
+
+                      return (
+                        <SubjectCard 
+                          key={subject.code} 
+                          subject={subject} 
+                          approved={approved} 
+                          available={available} 
+                          missing={missing}
+                          onClick={toggleSubject} 
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="semester-subjects">
-                  {subjects.map(subject => {
-                    const approved = isApproved(subject.code);
-                    const available = isAvailable(subject);
-                    const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
-
-                    return (
-                      <SubjectCard 
-                        key={subject.code} 
-                        subject={subject} 
-                        approved={approved} 
-                        available={available} 
-                        missing={missing}
-                        onClick={toggleSubject} 
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </main>
+              );
+            })}
+          </div>
+        </main>
+        
+        <button 
+          className="slider-zone right" 
+          onClick={() => scrollBoard('right')}
+          aria-label="Desplazar a la derecha"
+        >
+          <div className="slider-btn-circle">&#10095;</div>
+        </button>
+      </div>
     </div>
   );
 }

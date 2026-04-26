@@ -143,11 +143,92 @@ body {
 }
 
 /* Board */
+.board-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden; 
+}
+
+.slider-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px; /* Width of the entire vertical trigger zone */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.slider-zone.left {
+  left: 0;
+}
+
+.slider-zone.right {
+  right: 0;
+}
+
+/* Gradient background on hover for the entire strip */
+.slider-zone.left:hover {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.05), transparent);
+}
+
+.slider-zone.right:hover {
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.05), transparent);
+}
+
+/* The actual button inside the strip */
+.slider-btn-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  font-size: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Optical centering - adjusting padding slightly because unicode chevrons aren't perfectly square */
+.slider-zone.left .slider-btn-circle {
+  padding-right: 3px;
+}
+
+.slider-zone.right .slider-btn-circle {
+  padding-left: 3px;
+}
+
+/* Hover effect on circle when hovering the zone */
+.slider-zone:hover .slider-btn-circle {
+  background: var(--color-available);
+  color: #fff;
+  transform: scale(1.15);
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+}
+
 .board-container {
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 2rem;
+  padding: 2rem 4rem;
+  scroll-behavior: smooth;
+  height: 100%;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.board-container::-webkit-scrollbar {
+  display: none;
 }
 
 .semesters-grid {
