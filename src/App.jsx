@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { pensum, specialtiesList } from './data/pensum';
+import SubjectCard from './components/SubjectCard';
+import Header from './components/Header';
 
 function App() {
   const [selectedSpecialty, setSelectedSpecialty] = useState(specialtiesList[0]);
@@ -60,34 +62,12 @@ function App() {
 
   return (
     <div className="app-container">
-      <header className="header glass">
-        <div className="header-content">
-          <div className="title-area">
-            <h1>🎓 Career Tracker</h1>
-            <p>Ingeniería Eléctrica - UCV</p>
-          </div>
-          <div className="controls-area">
-            <div className="control-group">
-              <label>Especialidad:</label>
-              <select 
-                value={selectedSpecialty} 
-                onChange={(e) => setSelectedSpecialty(e.target.value)}
-                className="specialty-select"
-              >
-                {specialtiesList.map(sp => (
-                  <option key={sp} value={sp}>{sp}</option>
-                ))}
-              </select>
-            </div>
-            <div className="stats-card glass">
-              <div className="stat">
-                <span className="stat-label">Créditos Totales</span>
-                <span className="stat-value">{totalCredits} U.C.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header 
+        specialtiesList={specialtiesList}
+        selectedSpecialty={selectedSpecialty}
+        onSpecialtyChange={setSelectedSpecialty}
+        totalCredits={totalCredits}
+      />
 
       <main className="board-container">
         <div className="semesters-grid">
@@ -107,45 +87,15 @@ function App() {
                   {subjects.map(subject => {
                     const approved = isApproved(subject.code);
                     const available = isAvailable(subject);
-                    let statusClass = 'unavailable';
-                    let statusText = 'No Disponible';
-                    
-                    if (approved) {
-                      statusClass = 'approved';
-                      statusText = 'Aprobada';
-                    } else if (available) {
-                      statusClass = 'available';
-                      statusText = 'Disponible';
-                    }
 
                     return (
-                      <div 
+                      <SubjectCard 
                         key={subject.code} 
-                        className={`subject-card ${statusClass} glass`}
-                        onClick={() => {
-                          // Only toggle generic electives smoothly
-                          toggleSubject(subject.code);
-                        }}
-                      >
-                        <div className="subject-header">
-                          <span className="subject-code">{subject.code.replace('ELE_', '')}</span>
-                          <span className="subject-uc">{subject.uc} u.c</span>
-                        </div>
-                        <h3 className="subject-name">{subject.name}</h3>
-                        <div className="subject-footer">
-                          <span className="status-badge">{statusText}</span>
-                          {(!approved && !available) && subject.reqs.length > 0 && (
-                            <span className="reqs-tooltip" title={`Pre-reqs: ${subject.reqs.join(', ')}`}>
-                              ⚠️ Faltan requisitos
-                            </span>
-                          )}
-                          {(!approved && !available) && subject.reqCr > 0 && (
-                            <span className="reqs-tooltip" title={`Requiere: ${subject.reqCr} U.C.`}>
-                              ⚠️ Faltan créditos
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                        subject={subject} 
+                        approved={approved} 
+                        available={available} 
+                        onClick={toggleSubject} 
+                      />
                     );
                   })}
                 </div>
