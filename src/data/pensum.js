@@ -10,6 +10,92 @@ export const specialtiesList = [
   'Industrial'
 ];
 
+export const electiveOptions = {
+  humanistic: [
+    { code: '0111', name: 'Antropología', uc: 2, reqs: [], reqCr: 0 },
+    { code: '0112', name: 'Ética y Deontología', uc: 2, reqs: [], reqCr: 0 },
+    { code: '0113', name: 'Historia de la Ciencia', uc: 2, reqs: [], reqCr: 0 },
+    { code: '0114', name: 'Psicología Industrial', uc: 2, reqs: [], reqCr: 0 },
+    { code: '0115', name: 'Sociología', uc: 2, reqs: [], reqCr: 0 },
+    { code: '0116', name: 'Problemas del Desarrollo', uc: 2, reqs: [], reqCr: 0 },
+    { code: '0117', name: 'Teoría Económica', uc: 2, reqs: [], reqCr: 0 }
+  ],
+  technical: {
+    'Potencia': [
+      { code: '2219', name: 'Electrónica de Potencia I', uc: 4, reqs: ['2217'], reqCr: 150 },
+      { code: '2335', name: 'Canalizaciones y Distribución', uc: 4, reqs: ['2345'], reqCr: 150 },
+      { code: '2352', name: 'Sistemas de Protecciones II', uc: 4, reqs: ['2348'], reqCr: 150 },
+      { code: '2355', name: 'Algoritmos Genéticos para Ingenieros', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2354', name: 'Metod. Numéricos Aplicados en Sist. de Potencia', uc: 4, reqs: ['2346'], reqCr: 150 },
+      { code: '2265', name: 'Microprocesadores I', uc: 4, reqs: ['2234'], reqCr: 150 },
+      { code: '2210', name: 'Simulación de Sistemas', uc: 4, reqs: ['2508'], reqCr: 140 },
+      { code: '2356', name: 'Pasantía', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2319', name: 'Sist. Puesta a Tierra', uc: 4, reqs: ['2345'], reqCr: 150 }
+    ],
+    'Electrónica y Control': [
+      { code: '2210', name: 'Simulación de Sistemas', uc: 4, reqs: ['2508'], reqCr: 140 },
+      { code: '2220', name: 'Electrónica IV', uc: 4, reqs: ['2218'], reqCr: 150 },
+      { code: '2224', name: 'Sistemas de Control III', uc: 4, reqs: ['2223'], reqCr: 150 },
+      { code: '2226', name: 'Control Numérico', uc: 4, reqs: ['2222'], reqCr: 150 },
+      { code: '2227', name: 'Sistemas no Lineales', uc: 4, reqs: ['2222'], reqCr: 150 },
+      { code: '2228', name: 'Introducción a la Robótica', uc: 4, reqs: ['2223'], reqCr: 150 },
+      { code: '2245', name: 'Diseño de Sistemas Digitales', uc: 4, reqs: ['2234'], reqCr: 150 },
+      { code: '2246', name: 'Diseño de Circuitos Activos', uc: 4, reqs: ['2218'], reqCr: 150 },
+      { code: '2260', name: 'Ingeniería de Video', uc: 4, reqs: ['2218'], reqCr: 150 },
+      { code: '2267', name: 'Micro-Procesadores II', uc: 4, reqs: ['2265'], reqCr: 150 },
+      { code: '2268', name: 'Instrumentación Electrónica', uc: 4, reqs: ['2218'], reqCr: 150 },
+      { code: '2269', name: 'Lenguaje Ensamblador para Microprocesadores', uc: 4, reqs: ['2265'], reqCr: 150 },
+      { code: '2270', name: 'Sistema de Control Industrial', uc: 4, reqs: ['2266'], reqCr: 150 },
+      { code: '2272', name: 'Bioinstrumentación', uc: 4, reqs: ['2218'], reqCr: 150 },
+      { code: '2273', name: 'Electrónica Industrial', uc: 4, reqs: ['2217'], reqCr: 150 },
+      { code: '2274', name: 'Controladores Programables Industriales', uc: 4, reqs: ['2222'], reqCr: 150 },
+      { code: '2275', name: 'Lenguaje de alto nivel para Microprocesadores', uc: 4, reqs: ['2265'], reqCr: 150 },
+      { code: '2276', name: 'Sistemas de Control Distribuido', uc: 4, reqs: ['2265'], reqCr: 150 },
+      { code: '2355', name: 'Algoritmos Genéticos para Ingenieros', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2356', name: 'Pasantía', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2219', name: 'Electrónica de Potencia I', uc: 4, reqs: ['2217', '2133'], reqCr: 0 },
+      { code: '2335', name: 'Canalizaciones y Distribución', uc: 4, reqs: ['2345'], reqCr: 0 }
+    ],
+    'Comunicaciones': [
+      { code: '2430', name: 'Introducción a la Inteligencia Artificial', uc: 4, reqs: ['2233'], reqCr: 140 },
+      { code: '2434', name: 'Sistemas de Transm. Digital', uc: 4, reqs: ['2427'], reqCr: 150 },
+      { code: '2443', name: 'Sistemas de Transm. de Datos', uc: 4, reqs: ['2427'], reqCr: 150 },
+      { code: '2444', name: 'Diseño de Sist de Microondas', uc: 4, reqs: ['2416'], reqCr: 150 },
+      { code: '2445', name: 'Sistemas Móviles Comunicaciones', uc: 4, reqs: ['2415'], reqCr: 150 },
+      { code: '2446', name: 'Diseño de Sistm. Comunicaciones Satelitales', uc: 4, reqs: ['2416'], reqCr: 150 },
+      { code: '2447', name: 'Sistemas de Comunicaciones Ópticas', uc: 4, reqs: ['2440'], reqCr: 150 },
+      { code: '2448', name: 'Sistemas de Conmutación', uc: 4, reqs: ['2426'], reqCr: 150 },
+      { code: '2450', name: 'Seguridad en Redes y Criptografía', uc: 4, reqs: ['2427'], reqCr: 150 },
+      { code: '2452', name: 'Sistemas de Banda Ancha', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2453', name: 'Tec. de Acceso Última Milla', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2460', name: 'Ingeniería de Televisión I', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2466', name: 'Redes de Com. Telemática e ISDN', uc: 4, reqs: ['2427'], reqCr: 150 },
+      { code: '2465', name: 'Redes de Alta Velocidad y ATM', uc: 4, reqs: ['2466'], reqCr: 150 },
+      { code: '2470', name: 'Tec. para Control Avance Proyect.', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2494', name: 'Planificación de Sistemas', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2499', name: 'Ingeniería de Software', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2265', name: 'Microprocesadores I', uc: 4, reqs: ['2234'], reqCr: 150 },
+      { code: '2355', name: 'Algoritmos Genéticos para Ingenieros', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2356', name: 'Pasantía', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2467', name: 'Redes Comunic. Basadas en TCP/IP', uc: 4, reqs: ['2416'], reqCr: 150 },
+      { code: '2210', name: 'Simulación de Sistemas', uc: 4, reqs: ['2508'], reqCr: 140 },
+      { code: '2335', name: 'Canalizaciones y Distribución', uc: 4, reqs: ['2345'], reqCr: 0 }
+    ],
+    'Industrial': [
+      { code: '2229', name: 'Electrónica de Potencia II', uc: 4, reqs: ['2219'], reqCr: 150 },
+      { code: '2267', name: 'Micro-procesadores II', uc: 4, reqs: ['2265'], reqCr: 150 },
+      { code: '2268', name: 'Instrumentación Electrónica', uc: 4, reqs: ['2218'], reqCr: 150 },
+      { code: '2270', name: 'Sistemas de Control Industrial', uc: 4, reqs: ['2266'], reqCr: 150 },
+      { code: '2274', name: 'Controladores Programables Industriales', uc: 4, reqs: ['2222'], reqCr: 150 },
+      { code: '2276', name: 'Sistemas de Control Distrib.', uc: 4, reqs: ['2265'], reqCr: 150 },
+      { code: '2355', name: 'Algoritmos Genéticos para Ingenieros', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2319', name: 'Sist. Puesta a Tierra', uc: 4, reqs: ['2345'], reqCr: 150 },
+      { code: '2356', name: 'Pasantía', uc: 4, reqs: [], reqCr: 150 },
+      { code: '2210', name: 'Simulación de Sistemas', uc: 4, reqs: ['2508'], reqCr: 140 }
+    ]
+  }
+};
+
 export const pensum = [
   // Semestre 1
   { code: '0331', name: 'Física General I', uc: 5, semester: 1, reqs: [], reqCr: 0, common: true },

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { pensum, specialtiesList } from './data/pensum';
+import { pensum, specialtiesList, electiveOptions } from './data/pensum';
 import SubjectCard from './components/SubjectCard';
 import Header from './components/Header';
 import SliderButton from './components/SliderButton';
@@ -11,6 +11,10 @@ function App() {
   const [approvedSubjects, setApprovedSubjects] = useState(() => {
     const saved = localStorage.getItem('approved_subjects');
     return saved ? JSON.parse(saved) : [];
+  });
+  const [chosenElectives, setChosenElectives] = useState(() => {
+    const saved = localStorage.getItem('chosen_electives');
+    return saved ? JSON.parse(saved) : {};
   });
   const scrollRef = useRef(null);
 
@@ -26,16 +30,41 @@ function App() {
 
   const isApproved = (code) => approvedSubjects.includes(code);
 
+  const getEffectiveRequirements = (subjectSlot) => {
+    let reqCr = subjectSlot.reqCr || 0;
+    let reqs = [...(subjectSlot.reqs || [])];
+
+    const chosenCode = chosenElectives[subjectSlot.code];
+    if (chosenCode) {
+      const isHumanistic = subjectSlot.code.startsWith('ELH');
+      // Case-insensitive specialty matching
+      const techKey = Object.keys(electiveOptions.technical).find(
+        k => k.toLowerCase() === selectedSpecialty.toLowerCase()
+      );
+      const pool = isHumanistic ? electiveOptions.humanistic : 
+                   (techKey ? electiveOptions.technical[techKey] : []);
+      
+      const specific = pool?.find(opt => opt.code === chosenCode);
+      if (specific) {
+        reqCr = Math.max(reqCr, specific.reqCr || 0);
+        if (specific.reqs) {
+          reqs = [...new Set([...reqs, ...specific.reqs])];
+        }
+      }
+    }
+    return { reqCr, reqs };
+  };
+
   const isAvailable = (subject) => {
-    if (isApproved(subject.code)) return false; // Ya esta aprobada, su estado es 'Aprobada'
+    if (isApproved(subject.code)) return false; 
     
-    // Check credits requirement
-    if (subject.reqCr > 0 && totalCredits < subject.reqCr) {
+    const { reqCr, reqs } = getEffectiveRequirements(subject);
+
+    if (reqCr > 0 && totalCredits < reqCr) {
       return false;
     }
     
-    // Check subject prerequisites
-    for (let req of subject.reqs) {
+    for (let req of reqs) {
       if (!isApproved(req)) {
         return false;
       }
@@ -46,21 +75,32 @@ function App() {
 
   const scrollBoard = (direction) => {
     if (scrollRef.current) {
-      const scrollAmount = direction === 'left' ? -304 : 304; // 280px card + 24px gap
+      const scrollAmount = direction === 'left' ? -304 : 304; 
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   const getMissingRequirements = (subject) => {
     let missingInfo = [];
-    if (subject.reqCr > 0 && totalCredits < subject.reqCr) {
-      missingInfo.push(`Tener ${subject.reqCr} U.C.`);
+    const { reqCr, reqs } = getEffectiveRequirements(subject);
+
+    if (reqCr > 0 && totalCredits < reqCr) {
+      missingInfo.push(`Tener ${reqCr} U.C.`);
     }
-    for (let reqCode of subject.reqs) {
+    for (let reqCode of reqs) {
       if (!isApproved(reqCode)) {
         const prereq = pensum.find(s => s.code === reqCode);
         if (prereq) {
           missingInfo.push(`Aprobar ${prereq.name}`);
+        } else {
+          // Check if it's an elective code
+          const allTechnical = Object.values(electiveOptions.technical).flat();
+          const electivePrereq = [...electiveOptions.humanistic, ...allTechnical].find(e => e.code === reqCode);
+          if (electivePrereq) {
+             missingInfo.push(`Aprobar ${electivePrereq.name}`);
+          } else {
+             missingInfo.push(`Aprobar materia cód. ${reqCode}`);
+          }
         }
       }
     }
@@ -77,6 +117,15 @@ function App() {
     });
   };
 
+  const clearData = () => {
+    if (window.confirm('¿Estás seguro de que deseas borrar todo tu progreso?')) {
+      setApprovedSubjects([]);
+      setChosenElectives({});
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem('approved_subjects', JSON.stringify(approvedSubjects));
   }, [approvedSubjects]);
@@ -85,11 +134,20 @@ function App() {
     localStorage.setItem('selected_specialty', selectedSpecialty);
   }, [selectedSpecialty]);
 
+  useEffect(() => {
+    localStorage.setItem('chosen_electives', JSON.stringify(chosenElectives));
+  }, [chosenElectives]);
+
+  const handleElectiveChoice = (code, value) => {
+    setChosenElectives(prev => ({ ...prev, [code]: value }));
+  };
+
   const exportData = () => {
     const data = {
       selectedSpecialty,
       approvedSubjects,
-      version: "1.0",
+      chosenElectives,
+      version: "1.1",
       exportDate: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -113,6 +171,9 @@ function App() {
           if (data.selectedSpecialty && specialtiesList.includes(data.selectedSpecialty)) {
             setSelectedSpecialty(data.selectedSpecialty);
           }
+          if (data.chosenElectives) {
+            setChosenElectives(data.chosenElectives);
+          }
           setApprovedSubjects(data.approvedSubjects);
         } else {
           alert('Error: El archivo no contiene un formato de progreso válido.');
@@ -122,7 +183,6 @@ function App() {
       }
     };
     reader.readAsText(file);
-    // Reset input so the same file can be imported again if needed
     event.target.value = '';
   };
 
@@ -137,6 +197,67 @@ function App() {
     });
   };
 
+  const renderSemesterGrid = (sem) => {
+    const subjects = getSubjectsForSemester(sem);
+    if (subjects.length === 0) return null;
+    let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
+
+    return (
+      <div key={sem} className={`semester-col ${sem >= 8 ? 'specialty-semester' : ''}`}>
+        <div className="semester-header">
+          <div className="semester-title-group">
+            <h2>Semestre {sem}</h2>
+            {sem >= 8 ? (
+              <span className="specialty-badge">{selectedSpecialty}</span>
+            ) : (
+              <span className="specialty-badge basic-cycle">Ciclo Básico</span>
+            )}
+          </div>
+          <span className="semester-uc">{semUc} U.C.</span>
+        </div>
+        <div className="semester-subjects">
+          {subjects.map(subject => {
+            const approved = isApproved(subject.code);
+            const available = isAvailable(subject);
+            const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
+            
+            // Elective Logic - Robust detection
+            const isHumanistic = subject.code.startsWith('ELH');
+            const isTechnical = subject.code.startsWith('ELE_') || 
+                                subject.name.toLowerCase().includes('electiva técnica');
+            
+            // Case-insensitive specialty matching
+            const techKey = Object.keys(electiveOptions.technical).find(
+              k => k.toLowerCase() === selectedSpecialty.toLowerCase()
+            );
+            const techOptions = techKey ? electiveOptions.technical[techKey] : [];
+            
+            const options = isHumanistic ? electiveOptions.humanistic : 
+                            isTechnical ? techOptions : null;
+
+            const chosenCode = chosenElectives[subject.code];
+            const chosenElectiveObj = options?.find(opt => opt.code === chosenCode);
+
+            return (
+              <SubjectCard 
+                key={subject.code} 
+                subject={subject} 
+                approved={approved} 
+                available={available} 
+                missing={missing}
+                chosenElectiveName={chosenElectiveObj?.name}
+                chosenElectiveCode={chosenCode}
+                onElectiveChange={(val) => handleElectiveChoice(subject.code, val)}
+                electiveOptions={options && options.length > 0 ? options : null}
+                onClick={toggleSubject} 
+              />
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="app-container">
       <Header 
@@ -146,6 +267,7 @@ function App() {
         totalCredits={totalCredits}
         onExport={exportData}
         onImport={importData}
+        onClear={clearData}
       />
 
       <div className="board-wrapper">
@@ -153,80 +275,11 @@ function App() {
 
         <main className="board-container" ref={scrollRef}>
           <div className="semesters-grid">
-            {/* Ciclo Básico */}
             <div className="basic-cycle-group">
-              {semesters.filter(sem => sem < 8).map(sem => {
-                const subjects = getSubjectsForSemester(sem);
-                if (subjects.length === 0) return null;
-                let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
-
-                return (
-                  <div key={sem} className="semester-col">
-                    <div className="semester-header">
-                      <div className="semester-title-group">
-                        <h2>Semestre {sem}</h2>
-                        <span className="specialty-badge basic-cycle">Ciclo Básico</span>
-                      </div>
-                      <span className="semester-uc">{semUc} U.C.</span>
-                    </div>
-                    <div className="semester-subjects">
-                      {subjects.map(subject => {
-                        const approved = isApproved(subject.code);
-                        const available = isAvailable(subject);
-                        const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
-                        return (
-                          <SubjectCard 
-                            key={subject.code} 
-                            subject={subject} 
-                            approved={approved} 
-                            available={available} 
-                            missing={missing}
-                            onClick={toggleSubject} 
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
+              {semesters.filter(s => s < 8).map(sem => renderSemesterGrid(sem))}
             </div>
-
-            {/* Ciclo Especializado */}
             <div className="specialty-group">
-              {semesters.filter(sem => sem >= 8).map(sem => {
-                const subjects = getSubjectsForSemester(sem);
-                if (subjects.length === 0) return null;
-                let semUc = subjects.reduce((sum, s) => sum + s.uc, 0);
-
-                return (
-                  <div key={sem} className="semester-col specialty-semester">
-                    <div className="semester-header">
-                      <div className="semester-title-group">
-                        <h2>Semestre {sem}</h2>
-                        <span className="specialty-badge">{selectedSpecialty}</span>
-                      </div>
-                      <span className="semester-uc">{semUc} U.C.</span>
-                    </div>
-                    <div className="semester-subjects">
-                      {subjects.map(subject => {
-                        const approved = isApproved(subject.code);
-                        const available = isAvailable(subject);
-                        const missing = (!approved && !available) ? getMissingRequirements(subject) : [];
-                        return (
-                          <SubjectCard 
-                            key={subject.code} 
-                            subject={subject} 
-                            approved={approved} 
-                            available={available} 
-                            missing={missing}
-                            onClick={toggleSubject} 
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+              {semesters.filter(s => s >= 8).map(sem => renderSemesterGrid(sem))}
             </div>
           </div>
         </main>

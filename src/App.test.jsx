@@ -56,8 +56,8 @@ describe('App Dashboard Component', () => {
     // 'Diseño de Equipo Electrónico' should NOT be present initially
     expect(screen.queryByText('Diseño de Equipo Electrónico')).not.toBeInTheDocument();
     
-    // Change Specialty via Combobox
-    const select = screen.getByRole('combobox');
+    // Change Specialty via Label
+    const select = screen.getByLabelText(/Especialidad/i);
     fireEvent.change(select, { target: { value: 'Electrónica y Control' } });
     
     // Now 'Diseño de Equipo Electrónico' is visible

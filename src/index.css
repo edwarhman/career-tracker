@@ -482,6 +482,46 @@ body {
   /* Permite que el nombre ocupe el espacio disponible central */
 }
 
+.elective-selector-container {
+  margin: 0.5rem 0;
+}
+
+.elective-select {
+  width: 100%;
+  box-sizing: border-box; /* Crucial to prevent overflow with padding */
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  color: #ffffff; /* White text for visibility */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-md);
+  outline: none;
+  cursor: pointer;
+  background: rgba(15, 23, 42, 0.6); /* Darker semi-transparent background */
+  backdrop-filter: blur(4px);
+  appearance: auto; /* Use browser default arrow for reliability, or custom */
+}
+
+.elective-select:hover {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.elective-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+}
+
+.elective-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.elective-select option {
+  background: #0f172a; /* Solid dark background for options list */
+  color: #ffffff;
+  padding: 10px;
+}
+
 .subject-footer {
   display: flex;
   justify-content: space-between;

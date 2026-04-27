@@ -75,4 +75,43 @@ describe('SubjectCard Component', () => {
     expect(screen.getByTestId('missing-alert')).toBeInTheDocument();
     expect(screen.getByText('- Tener 100 U.C.')).toBeInTheDocument();
   });
+
+  test('renders elective selector when electiveOptions are provided', () => {
+    const opts = [{ code: 'EL1', name: 'Electiva A' }, { code: 'EL2', name: 'Electiva B' }];
+    const handleElectiveChange = vi.fn();
+    render(
+      <SubjectCard 
+        subject={{...mockSubject, name: 'Electiva Técnica I'}} 
+        approved={false} 
+        available={true} 
+        electiveOptions={opts}
+        onElectiveChange={handleElectiveChange}
+        onClick={() => {}} 
+      />
+    );
+
+    const select = screen.getByRole('combobox');
+    expect(select).toBeInTheDocument();
+    expect(screen.getByText('Electiva A')).toBeInTheDocument();
+    
+    fireEvent.change(select, { target: { value: 'EL1' } });
+    expect(handleElectiveChange).toHaveBeenCalledWith('EL1');
+  });
+
+  test('displays chosenElective name as the subject title', () => {
+    render(
+      <SubjectCard 
+        subject={{...mockSubject, name: 'Electiva Técnica I'}} 
+        approved={true} 
+        available={false} 
+        electiveOptions={[{ code: 'IA1', name: 'Fundamentos de IA' }]}
+        chosenElectiveName="Fundamentos de IA"
+        chosenElectiveCode="IA1"
+        onClick={() => {}} 
+      />
+    );
+
+    expect(screen.getByText('Fundamentos de IA')).toBeInTheDocument();
+    expect(screen.queryByText('Electiva Técnica I')).not.toBeInTheDocument();
+  });
 });
