@@ -28,7 +28,13 @@ function App() {
     return uc;
   }, [approvedSubjects]);
 
-  const isApproved = (code) => approvedSubjects.includes(code);
+  const isApproved = (code) => {
+    if (approvedSubjects.includes(code)) return true;
+    // Check if the code is a specific elective chosen in an approved slot
+    return Object.entries(chosenElectives).some(([slotCode, chosenCode]) => 
+      chosenCode === code && approvedSubjects.includes(slotCode)
+    );
+  };
 
   const getEffectiveRequirements = (subjectSlot) => {
     let reqCr = subjectSlot.reqCr || 0;

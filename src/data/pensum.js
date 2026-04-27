@@ -12,13 +12,28 @@ export const specialtiesList = [
 
 export const electiveOptions = {
   humanistic: [
-    { code: '0111', name: 'Antropología', uc: 2, reqs: [], reqCr: 0 },
-    { code: '0112', name: 'Ética y Deontología', uc: 2, reqs: [], reqCr: 0 },
-    { code: '0113', name: 'Historia de la Ciencia', uc: 2, reqs: [], reqCr: 0 },
-    { code: '0114', name: 'Psicología Industrial', uc: 2, reqs: [], reqCr: 0 },
-    { code: '0115', name: 'Sociología', uc: 2, reqs: [], reqCr: 0 },
-    { code: '0116', name: 'Problemas del Desarrollo', uc: 2, reqs: [], reqCr: 0 },
-    { code: '0117', name: 'Teoría Económica', uc: 2, reqs: [], reqCr: 0 }
+    { code: '0101', name: 'Inglés I', uc: 3, reqs: [], reqCr: 0 },
+    { code: '0102', name: 'Inglés II', uc: 3, reqs: ['0101'], reqCr: 57 },
+    { code: '0106', name: 'Ingles Conversacional I', uc: 3, reqs: ['0101'], reqCr: 50 },
+    { code: '0107', name: 'Ingles Conversacional II', uc: 3, reqs: ['0106'], reqCr: 0 },
+    { code: '0110', name: 'Problemas Nacionales', uc: 3, reqs: [], reqCr: 120 },
+    { code: '0113', name: 'Problemas Nacionales II', uc: 2, reqs: ['0012', '0183'], reqCr: 57 },
+    { code: '0114', name: 'Aproximación a la Literatura', uc: 3, reqs: ['0183'], reqCr: 39 },
+    { code: '0119', name: 'Sociología', uc: 3, reqs: [], reqCr: 57 },
+    { code: '0121', name: 'Geografía de Venezuela I', uc: 3, reqs: [], reqCr: 57 },
+    { code: '0122', name: 'Geografía de Venezuela II', uc: 3, reqs: ['0121'], reqCr: 0 },
+    { code: '0125', name: 'Geografía Física', uc: 3, reqs: [], reqCr: 57 },
+    { code: '0130', name: 'Economía', uc: 3, reqs: [], reqCr: 57 },
+    { code: '0135', name: 'Econ. y Legislación Venezolana', uc: 3, reqs: [], reqCr: 57 },
+    { code: '0140', name: 'Derecho y Ética', uc: 3, reqs: [], reqCr: 120 },
+    { code: '0142', name: 'Legislación Minera y Petrolera', uc: 3, reqs: [], reqCr: 57 },
+    { code: '0145', name: 'Deontología para Ingenieros', uc: 3, reqs: [], reqCr: 120 },
+    { code: '0153', name: 'Planificación', uc: 3, reqs: ['0130'], reqCr: 57 },
+    { code: '0154', name: 'Conservación de Rec. Nat. Renovables', uc: 2, reqs: [], reqCr: 57 },
+    { code: '0181', name: 'Canto Coral I', uc: 1, reqs: [], reqCr: 0 },
+    { code: '0182', name: 'Canto Coral II', uc: 1, reqs: ['0181'], reqCr: 0 },
+    { code: '0184', name: 'Ingeniería y Sociedad', uc: 3, reqs: ['0183'], reqCr: 50 },
+    { code: '0999', name: 'Deportes', uc: 1, reqs: [], reqCr: 0 }
   ],
   technical: {
     'Potencia': [
