@@ -54,6 +54,18 @@ El proyecto cuenta con una robusta suite de pruebas que garantiza la integridad 
 *   **Component Tests**: Pruebas aisladas para `SubjectCard`, `Header` y `SliderButton`.
 *   **Integration Tests**: Verificación del flujo completo en `App.test.jsx`.
 
+## 🤝 Contribuir
+Siéntete libre de abrir un *issue* o enviar un *pull request* para mejorar el pensum o las funcionalidades.
+
+## 🚀 Roadmap & Próximas Mejoras
+- [ ] **Historial de Notas**: Registro de calificación y periodo por materia.
+- [ ] **Cálculo de Promedio**: Cálculo automático del promedio ponderado acumulado.
+- [ ] **Gráficos de Progreso**: Visualización del % de carrera completado en tiempo real.
+- [ ] **Modo de Planificación**: Capacidad de proyectar materias para el próximo semestre.
+- [ ] **Sincronización Cloud**: Autenticación y guardado en la nube (Firebase/Supabase).
+- [ ] **PWA**: Soporte para instalación en dispositivos móviles y uso offline.
+- [ ] **Exportación a PDF**: Generación de reportes académicos listos para imprimir.
+
 ## 📄 Licencia
 
 Este proyecto es de código abierto y está disponible bajo la licencia MIT.
